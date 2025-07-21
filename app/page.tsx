@@ -332,46 +332,47 @@ export default function POSSystem() {
   const selectedItem = selectedItemIndex !== null ? cartItems[selectedItemIndex] : null
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900">
-      <div className="h-screen grid grid-rows-[auto_1fr_auto] font-sans">
-        <Header
-          onBarcodeSubmit={handleBarcodeSubmit}
-          onSearch={handleSearch}
-          selectedItem={
-            selectedItem
-              ? {
-                  description: selectedItem.description,
-                  qty: selectedItem.qty,
-                  total: selectedItem.total,
-                }
-              : null
-          }
-          isLoading={isLoading}
-        />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 font-sans flex flex-col">
+      <Header
+        onBarcodeSubmit={handleBarcodeSubmit}
+        onSearch={handleSearch}
+        selectedItem={
+          selectedItem
+            ? {
+                description: selectedItem.description,
+                qty: selectedItem.qty,
+                total: selectedItem.total,
+              }
+            : null
+        }
+        isLoading={isLoading}
+      />
 
+      {/* Cart Table Always Visible */}
+      <div className="flex-1 overflow-y-auto">
         <ItemTable items={cartItems} selectedItemIndex={selectedItemIndex} onItemSelect={handleItemSelect} />
-
-        <footer className="p-4 bg-slate-800/50 backdrop-blur-sm border-t border-slate-600/50">
-          <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr_3fr] gap-4">
-            <ControlPanel
-              onAbortReceipt={handleAbortReceipt}
-              onVoidItem={handleVoidItem}
-              onOfflineReceipt={handleOfflineReceipt}
-              onSubtotal={handleSubtotal}
-              onFindItem={handleFindItem}
-              onSelectItem={handleSelectItem}
-              onNewPrice={handleNewPrice}
-              onReturn={handleReturn}
-              hasSelectedItem={selectedItemIndex !== null}
-              isLoading={isLoading}
-            />
-
-            <SummaryPanel summary={summary} />
-
-            <Keypad onKeyPress={handleKeyPress} onShowTotal={handleShowTotal} />
-          </div>
-        </footer>
       </div>
+
+      <footer className="p-4 bg-slate-800/50 backdrop-blur-sm border-t border-slate-600/50">
+        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr_3fr] gap-4">
+          <ControlPanel
+            onAbortReceipt={handleAbortReceipt}
+            onVoidItem={handleVoidItem}
+            onOfflineReceipt={handleOfflineReceipt}
+            onSubtotal={handleSubtotal}
+            onFindItem={handleFindItem}
+            onSelectItem={handleSelectItem}
+            onNewPrice={handleNewPrice}
+            onReturn={handleReturn}
+            hasSelectedItem={selectedItemIndex !== null}
+            isLoading={isLoading}
+          />
+
+          <SummaryPanel summary={summary} />
+
+          <Keypad onKeyPress={handleKeyPress} onShowTotal={handleShowTotal} />
+        </div>
+      </footer>
 
       {/* Search Results Modal */}
       <Modal isOpen={showSearchModal} onClose={() => setShowSearchModal(false)} title="Search Results">

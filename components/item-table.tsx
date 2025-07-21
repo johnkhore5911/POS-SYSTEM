@@ -63,7 +63,7 @@ export default function ItemTable({ items, selectedItemIndex, onItemSelect }: It
                 className={`
                   cursor-pointer transition-all duration-200 hover:bg-slate-700/30
                   ${
-                    selectedItemIndex === index ? "bg-yellow-400/20 ring-1 ring-yellow-400/50" : "hover:bg-slate-700/20"
+                    selectedItemIndex === index ? "bg-yellow-400/40 ring-2 ring-yellow-400/80" : "hover:bg-slate-700/20"
                   }
                   ${item.isReturned ? "text-red-400" : "text-white"}
                   ${animatingItems.has(item.barcode) ? "animate-fade-in" : ""}
@@ -73,7 +73,12 @@ export default function ItemTable({ items, selectedItemIndex, onItemSelect }: It
                   {item.barcode}
                 </td>
                 <td className="px-4 py-3 text-sm border-b border-slate-700/30">
-                  <div className="truncate max-w-xs">{item.description}</div>
+                  <div className="truncate max-w-xs flex items-center gap-2">
+                    {item.description}
+                    {selectedItemIndex === index && (
+                      <span className="ml-2 px-2 py-0.5 rounded bg-yellow-400 text-slate-900 text-xs font-bold">Selected</span>
+                    )}
+                  </div>
                 </td>
                 <td className="px-4 py-3 text-sm border-b border-slate-700/30 font-semibold">{item.qty}</td>
                 <td className="px-4 py-3 text-sm border-b border-slate-700/30 hidden md:table-cell">{item.weight}</td>
