@@ -24,6 +24,8 @@ export default function POSSystem() {
     title: string
     content: React.ReactNode
   }>({ title: "", content: null })
+  const [searchResults, setSearchResults] = useState<CartItem[]>([])
+  const [showSearchModal, setShowSearchModal] = useState(false)
 
   const calculateSummary = useCallback((): Summary => {
     const itemCount = cartItems.length
@@ -57,8 +59,8 @@ export default function POSSystem() {
 
   const handleSearch = async (query: string) => {
     if (!query.trim()) {
-      setCartItems([])
-      setSelectedItemIndex(null)
+      setSearchResults([])
+      setShowSearchModal(false)
       return
     }
 
@@ -69,13 +71,23 @@ export default function POSSystem() {
         ...item,
         total: item.qty * item.price,
       }))
-      setCartItems(cartItems)
-      setSelectedItemIndex(null)
+      setSearchResults(cartItems)
+      setShowSearchModal(true)
     } catch (error) {
       showAlert("Search Error", "Failed to search for items.")
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handleAddToCart = (item: CartItem) => {
+    setCartItems((prev) => {
+      const newCart = [...prev, item];
+      setSelectedItemIndex(newCart.length - 1);
+      return newCart;
+    });
+    setShowSearchModal(false);
+    setSearchResults([]);
   }
 
   const handleItemSelect = (index: number) => {
@@ -360,6 +372,31 @@ export default function POSSystem() {
           </div>
         </footer>
       </div>
+
+      {/* Search Results Modal */}
+      <Modal isOpen={showSearchModal} onClose={() => setShowSearchModal(false)} title="Search Results">
+        {searchResults.length === 0 ? (
+          <div className="text-slate-300">No items found.</div>
+        ) : (
+          <ul className="divide-y divide-slate-700">
+            {searchResults.map((item, idx) => (
+              <li key={item.barcode + idx} className="py-2 flex items-center justify-between">
+                <div>
+                  <div className="font-semibold text-white">{item.description}</div>
+                  <div className="text-xs text-slate-400">Barcode: {item.barcode}</div>
+                  <div className="text-xs text-slate-400">Price: ₹{item.price.toFixed(2)}</div>
+                </div>
+                <button
+                  className="ml-4 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm"
+                  onClick={() => handleAddToCart(item)}
+                >
+                  Add to Cart
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Modal>
 
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={modalContent.title}>
         {modalContent.content}

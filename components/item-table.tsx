@@ -31,8 +31,8 @@ export default function ItemTable({ items, selectedItemIndex, onItemSelect }: It
 
   return (
     <main className="flex-1 overflow-hidden">
-      <div className="h-full overflow-y-auto">
-        <table className="w-full border-collapse">
+      <div className="overflow-y-auto overflow-x-auto min-h-[120px]">
+        <table className="w-full min-w-[600px] border-collapse">
           <thead className="sticky top-0 bg-gradient-to-r from-slate-800 to-slate-700 z-10">
             <tr>
               <th className="px-4 py-3 text-left text-sm font-semibold text-slate-200 border-b border-slate-600/50 hidden sm:table-cell">
