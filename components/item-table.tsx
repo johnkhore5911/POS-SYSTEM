@@ -31,8 +31,52 @@ export default function ItemTable({ items, selectedItemIndex, onItemSelect }: It
 
   return (
     <main className="flex-1 overflow-hidden">
+      {/* Card view for mobile, table for sm+ */}
       <div className="overflow-y-auto overflow-x-auto min-h-[120px]">
-        <table className="w-full min-w-[600px] border-collapse">
+        {/* Mobile: Card view */}
+        <div className="block sm:hidden space-y-3">
+          {items.length === 0 ? (
+            <div className="flex flex-col items-center gap-2 py-8 text-slate-400">
+              <div className="w-12 h-12 rounded-full bg-slate-700/50 flex items-center justify-center">
+                <span className="text-2xl">🛒</span>
+              </div>
+              <p>No items in cart</p>
+              <p className="text-sm">Scan a barcode or search for items to get started</p>
+            </div>
+          ) : (
+            items.map((item, index) => (
+              <div
+                key={`${item.barcode}-${index}`}
+                onClick={() => onItemSelect(index)}
+                className={`rounded-lg p-4 shadow-md border transition-all duration-200 cursor-pointer
+                  ${selectedItemIndex === index ? "bg-yellow-400/40 border-yellow-400 ring-2 ring-yellow-400/80" : "bg-slate-800/60 border-slate-700 hover:bg-slate-700/40"}
+                  ${item.isReturned ? "text-red-400" : "text-white"}
+                  ${animatingItems.has(item.barcode) ? "animate-fade-in" : ""}
+                `}
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <div className="font-semibold text-base flex items-center gap-2">
+                    {item.description}
+                    {selectedItemIndex === index && (
+                      <span className="ml-2 px-2 py-0.5 rounded bg-yellow-400 text-slate-900 text-xs font-bold">Selected</span>
+                    )}
+                  </div>
+                  <div className="text-xs text-slate-400 font-mono">{item.barcode}</div>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <div>Qty: <span className="font-bold">{item.qty}</span></div>
+                  <div>Price: <span className="font-bold">₹{item.price.toFixed(2)}</span></div>
+                  <div>Total: <span className="font-bold">₹{item.total.toFixed(2)}</span></div>
+                </div>
+                {item.weight !== undefined && (
+                  <div className="text-xs text-slate-400 mt-1">Weight: {item.weight}</div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+        {/* Desktop: Table view */}
+        <table className="w-full min-w-[600px] border-collapse hidden sm:table">
           <thead className="sticky top-0 bg-gradient-to-r from-slate-800 to-slate-700 z-10">
             <tr>
               <th className="px-4 py-3 text-left text-sm font-semibold text-slate-200 border-b border-slate-600/50 hidden sm:table-cell">
